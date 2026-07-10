@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TravelAssistant - Destinations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #007bff;
+            font-size: 2.5em;
+        }
+
+        header h3 {
+            color: #6c757d;
+        }
+
+        h2 {
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+            padding-left: 10px;
+            margin-top: 35px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            height: 34px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+        }
+
+        .lang-toggle button {
+            border: 2px solid #007bff;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.85em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .destination-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .destination-item {
+            background: #f1f8ff;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #007bff;
+            display: flex;
+            gap: 15px;
+        }
+
+        .destination-item img {
+            width: 160px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .destination-details h3 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+
+        .destination-details p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+        }
+
+        /* DARK MODE OVERRIDES */
+        body.dark-mode {
+            background-color: #121212 !important;
+            color: #e0e0e0 !important;
+        }
+
+        .dark-mode .container {
+            background-color: #1e1e1e !important;
+            color: #e0e0e0 !important;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .dark-mode header {
+            border-bottom-color: #4dabff !important;
+        }
+
+        .dark-mode header h1 {
+            color: #4dabff !important;
+        }
+
+        .dark-mode header h3 {
+            color: #b0b0b0 !important;
+        }
+
+        .dark-mode nav ul {
+            background-color: #2c2c2c !important;
+        }
+
+        .dark-mode nav ul li a {
+            color: #4dabff !important;
+        }
+
+        .dark-mode nav ul li a:hover {
+            background-color: #4dabff !important;
+            color: #fff !important;
+        }
+
+        .dark-mode .lang-toggle button,
+        .dark-mode .theme-toggle button {
+            border-color: #4dabff !important;
+            color: #4dabff !important;
+            background: transparent !important;
+        }
+
+        .dark-mode .theme-toggle button:hover {
+            background-color: rgba(77, 171, 255, 0.1) !important;
+        }
+
+        .dark-mode h2 {
+            color: #ff5252 !important;
+            border-left-color: #ff5252 !important;
+        }
+
+        .dark-mode input,
+        .dark-mode select,
+        .dark-mode textarea {
+            background-color: #2c2c2c !important;
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+        }
+
+        .dark-mode .destination-item,
+        .dark-mode .feature-item,
+        .dark-mode .info-card,
+        .dark-mode .card,
+        .dark-mode .form-box {
+            background-color: #252b33 !important;
+            border-color: #4dabff !important;
+        }
+
+        .dark-mode .destination-details h3 {
+            color: #4dabff !important;
+        }
+
+        .dark-mode .destination-details p {
+            color: #e0e0e0 !important;
+        }
+
+        .dark-mode footer {
+            color: #888 !important;
+        }
+
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 10001;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 38px;
+            position: relative;
+            width: 74px;
+        }
+        .theme-switch input { display: none; }
+        .slider {
+            background-color: #e0e0e0 !important;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .ball {
+            background-color: #2c3e50;
+            bottom: 4px;
+            height: 30px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 2;
+            transform: translateX(36px);
+        }
+        input:checked + .slider { background-color: #1a1a2e !important; }
+        input:checked + .slider .ball { transform: translateX(0); background-color: #fff; }
+        .slider svg { width: 22px; height: 22px; z-index: 1; transition: .4s; }
+        .slider .sun { color: #f1c40f !important; fill: #f1c40f; }
+        .slider .moon { color: #f1c40f !important; fill: #f1c40f; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header style="position:relative;">
+            <h1>TravelAssistant</h1>
+            <h3 data-i18n="dest-subtitle">Complete Destination List (24 Places)</h3>
+            <div class="lang-toggle" style="position:absolute;bottom:8px;right:10px;display:flex;gap:4px;">
+                <button id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+                <button id="lang-btn-bn" onclick="setLanguage('bn')">বাংলা</button>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="index.html" data-i18n="nav-home">Home</a></li>
+                <li><a href="page2.html" data-i18n="nav-destinations">Destinations</a></li>
+                <li><a href="page3.html" data-i18n="nav-weather">Weather Preference</a></li>
+                <li><a href="page4.html" data-i18n="nav-budget">Budget Planner</a></li>
+                <li><a href="page5.html" data-i18n="nav-seasonal">Seasonal Specials</a></li>
+                <li><a href="page8.html" data-i18n="nav-matchmaker">Matchmaker</a></li>
+                <li><a href="page10.html" data-i18n="nav-packing">Packing Assistant</a></li>
+                <li><a href="page6.html" data-i18n="nav-contact">Contact</a></li>
+                <li><a href="page7.html" data-i18n="nav-about">About Us</a></li>
+                <li id="userDisplay"></li>
+            </ul>
+        </nav>
+
+        <!-- ================= CULTURE & HISTORY ================= -->
+
+        <h2 data-i18n="dest-h2-culture">Culture &amp; History</h2>
+        <ul class="destination-list">
+
+            <li class="destination-item">
+                <img
+                    src="https://assets.gqindia.com/photos/68678e2cb1a3fca3d9ad610d/16:9/w_2560%2Cc_limit/The-Taj-Mahal.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="agra-name">Agra, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="agra-climate">Hot & Dry</span></p>
+                    <p data-i18n="agra-desc">Home of the Taj Mahal and Mughal architecture.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img src="https://media.istockphoto.com/id/1498516775/photo/the-eiffel-tower-in-paris-france-at-sunset.jpg?s=612x612&w=0&k=20&c=V4StdESr6-QQWOjXm6R8b1T-_slWLxasMnN6SWdV9ko=
+">
+                <div class="destination-details">
+                    <h3 data-i18n="paris-name">Paris, France</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="paris-climate">Pleasant</span></p>
+                    <p data-i18n="paris-desc">Eiffel Tower, museums and café culture.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://media.istockphoto.com/id/539115110/photo/colosseum-in-rome-and-morning-sun-italy.jpg?s=612x612&w=0&k=20&c=9NtFxHI3P2IBWRY9t0NrfPZPR4iusHmVLbXg2Cjv9Fs=">
+                <div class="destination-details">
+                    <h3 data-i18n="rome-name">Rome, Italy</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="rome-climate">Mild</span></p>
+                    <p data-i18n="rome-desc">Colosseum, Vatican and ancient ruins.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img src="https://handluggageonly.co.uk/wp-content/uploads/2017/05/iStock-509472000.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="kyoto-name">Kyoto, Japan</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="kyoto-climate">Mild</span></p>
+                    <p data-i18n="kyoto-desc">Temples, cherry blossoms and traditions.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://akm-img-a-in.tosshub.com/indiatoday/images/photogallery/201908/ECO3aacUcAAHnEZ_IT_1566199924087.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="kolkata-name">Kolkata, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="kolkata-climate">Humid</span></p>
+                    <p data-i18n="kolkata-desc">Colonial architecture and cultural hub.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://www.shutterstock.com/image-photo/skyline-athens-monastiraki-square-acropolis-600nw-2556000699.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="athens-name">Athens, Greece</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="athens-climate">Sunny</span></p>
+                    <p data-i18n="athens-desc">Birthplace of Western civilization.</p>
+                </div>
+            </li>
+
+        </ul>
+
+        <!-- ================= ADVENTURE & MOUNTAINS ================= -->
+
+        <h2 data-i18n="dest-h2-adventure">Adventure &amp; Mountains</h2>
+        <ul class="destination-list">
+
+            <li class="destination-item">
+                <img
+                    src="https://media.istockphoto.com/id/1496660180/photo/the-sissu-valley.jpg?s=612x612&w=0&k=20&c=eYg4cuYIQTZUuNa6x19ZBQI-xm-tV-t8h6MecSlYQRE=">
+                <div class="destination-details">
+                    <h3 data-i18n="manali-name">Manali, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="manali-climate">Cold</span></p>
+                    <p data-i18n="manali-desc">Snow sports and trekking routes.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img src="https://t3.ftcdn.net/jpg/03/16/90/28/360_F_316902872_1vCzXTYdvOFt5hcoc8r8udpyCuMm4ahv.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="kashmir-name">Kashmir, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="kashmir-climate">Cold</span></p>
+                    <p data-i18n="kashmir-desc">Dal Lake and snow valleys.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://media.istockphoto.com/id/517599616/photo/panorama-view-of-oeschinensee-on-bernese-oberla.jpg?s=612x612&w=0&k=20&c=PkX0ebgjcsBK4_dnDGClLGspqI4bUZqGB-qUyBnoyIo=">
+                <div class="destination-details">
+                    <h3 data-i18n="swissalps-name">Swiss Alps, Switzerland</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="swissalps-climate">Cold</span></p>
+                    <p data-i18n="swissalps-desc">Ski resorts and glaciers.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://www.starscapes.zone/wp-content/uploads/2025/06/women-pangong-lake-mountain-leh-ladakh-india-1-scaled.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="ladakh-name">Leh-Ladakh, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="ladakh-climate">Cold</span></p>
+                    <p data-i18n="ladakh-desc">High-altitude desert landscapes.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://media.istockphoto.com/id/491114280/photo/queenstown-new-zealand.jpg?s=612x612&w=0&k=20&c=aVIgv4sW7zKUHAVP6CaTJWU3sG6B1jd8AQx9dpyZ-0I=">
+                <div class="destination-details">
+                    <h3 data-i18n="queenstown-name">Queenstown, New Zealand</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="queenstown-climate">Mild</span></p>
+                    <p data-i18n="queenstown-desc">Adventure capital of the world.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://thumbs.dreamstime.com/b/materhorn-autumn-zermatt-switzerland-beautiful-mountain-landscape-162933652.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="zermatt-name">Zermatt, Switzerland</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="zermatt-climate">Cold</span></p>
+                    <p data-i18n="zermatt-desc">Views of Matterhorn mountain.</p>
+                </div>
+            </li>
+
+        </ul>
+
+        <!-- ================= BEACH & RELAXATION ================= -->
+
+        <h2 data-i18n="dest-h2-beach">Beach &amp; Relaxation</h2>
+        <ul class="destination-list">
+
+            <li class="destination-item">
+                <img
+                    src="https://media.istockphoto.com/id/621897226/photo/goa-beach-and-beautiful-sky-india.jpg?s=612x612&w=0&k=20&c=qDkllEUm9UpsXtfPlELdknkHMlgyT-kptQy6vAYFsM8=">
+                <div class="destination-details">
+                    <h3 data-i18n="goa-name">Goa, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="goa-climate">Hot & Humid</span></p>
+                    <p data-i18n="goa-desc">Beaches and nightlife.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFsZGl2ZXN8ZW58MHx8MHx8fDA%3D">
+                <div class="destination-details">
+                    <h3 data-i18n="maldives-name">Maldives</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="maldives-climate">Tropical</span></p>
+                    <p data-i18n="maldives-desc">Luxury overwater villas.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://www.travelandleisure.com/thmb/RQ3JmT8V2y2fhwr7NY0cgUumcCE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/phuket-thailand-karst-formation-phuket0327-92bd3ce9266148dba74cba5e36c711e2.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="phuket-name">Phuket, Thailand</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="phuket-climate">Hot</span></p>
+                    <p data-i18n="phuket-desc">Island hopping and beaches.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/c9/58/11/kerala-backwater-sky.jpg?w=1200&h=900&s=1">
+                <div class="destination-details">
+                    <h3 data-i18n="kerala-name">Kerala Backwaters</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="kerala-climate">Rainy & Pleasant</span></p>
+                    <p data-i18n="kerala-desc">Houseboats and palm trees.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://www.coolhawaii.com/wp-content/uploads/sites/62/sites/138/2022/03/the-beautiful-and-unique-landscape-of-coastal-oahu-hawaii-and-the-kualoa-ranch-where-jurassic-park-was-filmed-as-shot-from-an-altitude-of-about-1000-feet-over-the-pacific-ocean-stockpack-istock-2048x1367.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="hawaii-name">Hawaii, USA</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="hawaii-climate">Warm</span></p>
+                    <p data-i18n="hawaii-desc">Volcanoes and surfing.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://www.flamingotravels.co.in/_next/image?url=https%3A%2F%2Fimgcdn.flamingotravels.co.in%2FImages%2FMenu%2FDestination%2Fbali.jpg&w=1200&q=75">
+                <div class="destination-details">
+                    <h3 data-i18n="bali-name">Bali, Indonesia</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="bali-climate">Tropical</span></p>
+                    <p data-i18n="bali-desc">Beaches and temples.</p>
+                </div>
+            </li>
+
+        </ul>
+
+        <!-- ================= CITY & URBAN ================= -->
+
+        <h2 data-i18n="dest-h2-city">City &amp; Urban Exploration</h2>
+        <ul class="destination-list">
+
+            <li class="destination-item">
+                <img src="https://i.natgeofe.com/k/5b396b5e-59e7-43a6-9448-708125549aa1/new-york-statue-of-liberty.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="newyork-name">New York, USA</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="newyork-climate">Varies</span></p>
+                    <p data-i18n="newyork-desc">Skyscrapers and Broadway.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img src="https://t4.ftcdn.net/jpg/01/46/43/87/360_F_146438747_3XYwVkfnYZuukBZYmDM8xeoqENzyhAqa.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="mumbai-name">Mumbai, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="mumbai-climate">Hot</span></p>
+                    <p data-i18n="mumbai-desc">Bollywood and street markets.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://img.freepik.com/free-photo/big-ben-westminster-bridge-sunset-london-uk_268835-1395.jpg?semt=ais_hybrid&w=740&q=80">
+                <div class="destination-details">
+                    <h3 data-i18n="london-name">London, UK</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="london-climate">Cool</span></p>
+                    <p data-i18n="london-desc">Palaces and museums.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://images.unsplash.com/photo-1587474260584-136574528ed5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVsaGl8ZW58MHx8MHx8fDA%3D">
+                <div class="destination-details">
+                    <h3 data-i18n="delhi-name">Delhi, India</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="delhi-climate">Hot</span></p>
+                    <p data-i18n="delhi-desc">Historic forts and markets.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img src="https://i.natgeofe.com/k/95d61645-a0c7-470f-b198-74a399dd5dfb/singapore-city_3x2.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="singapore-name">Singapore</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="singapore-climate">Hot</span></p>
+                    <p data-i18n="singapore-desc">Clean modern city and gardens.</p>
+                </div>
+            </li>
+
+            <li class="destination-item">
+                <img
+                    src="https://cdn-imgix.headout.com/blog-banner-image/image/f19588608e5185ac12359ad572267c95-burj%20khalifa.jpg">
+                <div class="destination-details">
+                    <h3 data-i18n="dubai-name">Dubai, UAE</h3>
+                    <p><b data-i18n="dest-climate-label">Climate:</b> <span data-i18n="dubai-climate">Hot</span></p>
+                    <p data-i18n="dubai-desc">Skyscrapers and desert safari.</p>
+                </div>
+            </li>
+
+        </ul>
+
+    </div>
+    <script>
+        let name = localStorage.getItem("userName");
+
+        if (name) {
+            document.getElementById("userDisplay").innerHTML =
+                "👤 " + name + " | <a href='#' onclick='logout()'>Logout</a>";
+        } else {
+            document.getElementById("userDisplay").innerHTML =
+                "<a href='auth.html'>Login</a>";
+        }
+
+        function logout() {
+            localStorage.clear();
+            alert("Logged out successfully");
+            window.location = "auth.html";
+        }
+    </script>
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="theme-checkbox">
+            <input type="checkbox" id="theme-checkbox" onclick="toggleDarkMode()">
+            <div class="slider">
+                <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <div class="ball"></div>
+            </div>
+        </label>
+    </div>
+
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+</body>
+
+</html>

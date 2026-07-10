@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TravelAssistant - Access</title>
+
+<style>
+body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    margin:0;
+    padding:0;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("https://img.freepik.com/free-vector/realistic-travel-background-with-elements_52683-77784.jpg?semt=ais_hybrid&w=740&q=80");
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+}
+
+.auth-container{
+    width:420px;
+    margin:90px auto;
+    background:#ffffff;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.3);
+}
+
+h1{
+    text-align:center;
+    color:#007bff;
+    margin-bottom:5px;
+}
+p.sub{
+    text-align:center;
+    color:#6c757d;
+    margin-bottom:20px;
+}
+
+/* LANGUAGE TOGGLE (top right of card) */
+.auth-lang-toggle {
+    text-align: right;
+    margin-bottom: 10px;
+}
+.auth-lang-toggle button {
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    padding: 3px 9px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    background: transparent;
+    color: #007bff;
+}
+.auth-lang-toggle button.active-lang {
+    background: #007bff;
+    color: white;
+}
+
+.tabs{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+.tabs button{
+    flex:1;
+    padding:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    background:#f8f9fa;
+    color:#007bff;
+    border-bottom:3px solid transparent;
+}
+.tabs button.active{
+    background:#fff;
+    border-bottom:3px solid #007bff;
+}
+
+.form{ display:none; }
+.form.active{ display:block; }
+
+label{ font-weight:bold; }
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0 15px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing: border-box;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+.btn:hover{ background:#0056b3; }
+
+.guest-btn{ background:#28a745; }
+.guest-btn:hover{ background:#1e7e34; }
+
+.footer-text{
+    text-align:center;
+    font-size:0.85em;
+    color:#6c757d;
+    margin-top:15px;
+}
+
+/* DARK MODE OVERRIDES */
+body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+.dark-mode .auth-container { background-color: #1e1e1e !important; color: #e0e0e0 !important; box-shadow: 0 4px 12px rgba(255,255,255,0.05) !important; }
+.dark-mode h1 { color: #4dabff !important; }
+.dark-mode p.sub { color: #b0b0b0 !important; }
+.dark-mode .auth-lang-toggle button, .dark-mode .theme-toggle button { border-color: #4dabff !important; color: #4dabff !important; background: transparent !important; }
+.dark-mode .auth-lang-toggle button.active-lang { background: #4dabff !important; color: #fff !important; }
+.dark-mode .tabs button { background: #2c2c2c !important; color: #4dabff !important; }
+.dark-mode .tabs button.active { background: #1e1e1e !important; border-bottom-color: #4dabff !important; }
+.dark-mode .btn { background: #4dabff !important; }
+.dark-mode .guest-btn { background: #28a745 !important; } /* Keep green for Guest button */
+.dark-mode input { background-color: #2c2c2c !important; color: #e0e0e0 !important; border-color: #444 !important; }
+.dark-mode .footer-text { color: #888 !important; }
+
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 10001;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 38px;
+            position: relative;
+            width: 74px;
+        }
+        .theme-switch input { display: none; }
+        .slider {
+            background-color: #e0e0e0 !important;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .ball {
+            background-color: #2c3e50;
+            bottom: 4px;
+            height: 30px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 2;
+            transform: translateX(36px);
+        }
+        input:checked + .slider { background-color: #1a1a2e !important; }
+        input:checked + .slider .ball { transform: translateX(0); background-color: #fff; }
+        .slider svg { width: 22px; height: 22px; z-index: 1; transition: .4s; }
+        .slider .sun { color: #f1c40f !important; fill: #f1c40f; }
+        .slider .moon { color: #f1c40f !important; fill: #f1c40f; }
+</style>
+</head>
+
+<body>
+
+<div class="auth-container">
+    <h1>TravelAssistant</h1>
+    <p class="sub" data-i18n="auth-subtitle">Access your smart travel planner</p>
+
+    <div class="auth-lang-toggle" style="display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-bottom:10px;">
+        <div class="lang-btns">
+            <button id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+            <button id="lang-btn-bn" onclick="setLanguage('bn')">বাংলা</button>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="active" onclick="showForm('login')" data-i18n="tab-login">Login</button>
+        <button onclick="showForm('signup')" data-i18n="tab-signup">Sign Up</button>
+        <button class="guest-btn" onclick="guestAccess()" data-i18n="tab-guest">Guest</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login" class="form active">
+        <label data-i18n="label-email">Email</label>
+        <input type="email" id="loginEmail" data-i18n-placeholder="placeholder-email" placeholder="Enter email">
+
+        <label data-i18n="label-password">Password</label>
+        <input type="password" id="loginPass" data-i18n-placeholder="placeholder-pass" placeholder="Enter password">
+
+        <button class="btn" onclick="login()" data-i18n="btn-login">Login</button>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="signup" class="form">
+        <label data-i18n="label-fullname">Full Name</label>
+        <input type="text" id="name" data-i18n-placeholder="placeholder-name" placeholder="Enter full name">
+
+        <label data-i18n="label-email">Email</label>
+        <input type="email" id="signupEmail" data-i18n-placeholder="placeholder-email" placeholder="Enter email">
+
+        <label data-i18n="label-password">Password</label>
+        <input type="password" id="signupPass" data-i18n-placeholder="placeholder-newpass" placeholder="Create password">
+
+        <button class="btn" onclick="signup()" data-i18n="btn-signup">Create Account</button>
+    </div>
+
+    <div class="footer-text">
+        &copy; 2026 TravelAssistant Global
+    </div>
+</div>
+
+<script>
+// ===== SWITCH FORMS =====
+function showForm(type){
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.form').forEach(f=>f.classList.remove('active'));
+
+    if(type==='login'){
+        document.querySelectorAll('.tabs button')[0].classList.add('active');
+        document.getElementById('login').classList.add('active');
+    }else{
+        document.querySelectorAll('.tabs button')[1].classList.add('active');
+        document.getElementById('signup').classList.add('active');
+    }
+}
+
+// ===== VALIDATION FUNCTIONS =====
+function isValidEmail(email){
+    return email.endsWith("@gmail.com");
+}
+
+function isValidPassword(password){
+    return password.length >= 6 && /\d/.test(password);
+}
+
+// ===== SIGNUP =====
+function signup(){
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("signupEmail").value;
+    let pass = document.getElementById("signupPass").value;
+
+    if(name==="" || email==="" || pass===""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(!isValidEmail(email)){
+        alert("Email must be @gmail.com");
+        return;
+    }
+
+    if(!isValidPassword(pass)){
+        alert("Password must be at least 6 characters and include a number");
+        return;
+    }
+
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPass", pass);
+
+    alert("Account created successfully!");
+    window.location="index.html";
+}
+
+// ===== LOGIN =====
+function login(){
+    let email = document.getElementById("loginEmail").value;
+    let pass = document.getElementById("loginPass").value;
+
+    if(email==="" || pass===""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(!isValidEmail(email)){
+        alert("Email must be @gmail.com");
+        return;
+    }
+
+    if(!isValidPassword(pass)){
+        alert("Invalid password format");
+        return;
+    }
+
+    let savedEmail = localStorage.getItem("userEmail");
+    let savedPass = localStorage.getItem("userPass");
+
+    if(email === savedEmail && pass === savedPass){
+        alert("Login successful!");
+        window.location="index.html";
+    }else{
+        alert("Invalid credentials!");
+    }
+}
+
+// ===== GUEST =====
+function guestAccess(){
+    localStorage.setItem("userName", "Guest");
+    alert("Continuing as Guest");
+    window.location="index.html";
+}
+</script>
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="theme-checkbox">
+        <input type="checkbox" id="theme-checkbox" onclick="toggleDarkMode()">
+        <div class="slider">
+            <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <div class="ball"></div>
+        </div>
+    </label>
+</div>
+
+<script src="language.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

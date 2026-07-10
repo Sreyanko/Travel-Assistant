@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TravelAssistant - Matchmaker</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+.container {
+    width: 85%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+header {
+    text-align: center;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+header h1 { color: #007bff; font-size: 2.5em; }
+header h3 { color: #6c757d; font-weight: bold; }
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+nav ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    height: 34px;
+}
+nav ul li a:hover { background: #007bff; color: white; border-radius: 5px; }
+
+.lang-toggle { display: flex; align-items: center; gap: 4px; padding: 6px 10px; }
+.lang-toggle button { border: 2px solid #007bff; border-radius: 4px; padding: 4px 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; transition: 0.2s; }
+
+h2 { color: #dc3545; border-left: 4px solid #dc3545; padding-left: 10px; }
+
+.quiz-card {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    margin-top: 20px;
+}
+.question { margin-bottom: 20px; }
+.question label { display: block; font-weight: bold; margin-bottom: 10px; }
+select { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #ccc; }
+
+.find-btn {
+    width: 100%;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+.find-btn:hover { background: #218838; }
+
+#match-result { display: none; margin-top: 30px; text-align: center; }
+.match-card { background: #fff; border: 2px solid #007bff; border-radius: 12px; padding: 20px; max-width: 420px; margin: auto; }
+.match-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+.match-card h3 { color: #007bff; margin-top: 15px; }
+
+footer { text-align: center; margin-top: 40px; color: #6c757d; }
+
+/* DARK MODE OVERRIDES */
+body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+.dark-mode .container { background-color: #1e1e1e !important; color: #e0e0e0 !important; box-shadow: 0 4px 12px rgba(255,255,255,0.05) !important; }
+.dark-mode header { border-bottom-color: #4dabff !important; }
+.dark-mode header h1 { color: #4dabff !important; }
+.dark-mode header h3 { color: #b0b0b0 !important; }
+.dark-mode nav ul { background-color: #2c2c2c !important; }
+.dark-mode nav ul li a { color: #4dabff !important; }
+.dark-mode nav ul li a:hover { background-color: #4dabff !important; color: #fff !important; }
+.dark-mode .lang-toggle button, .dark-mode .theme-toggle button { border-color: #4dabff !important; color: #4dabff !important; background: transparent !important; }
+.dark-mode .theme-toggle button:hover { background-color: rgba(77, 171, 255, 0.1) !important; }
+.dark-mode h2 { color: #ff5252 !important; border-left-color: #ff5252 !important; }
+.dark-mode input, .dark-mode select, .dark-mode textarea { background-color: #2c2c2c !important; color: #e0e0e0 !important; border-color: #444 !important; }
+.dark-mode .destination-item, .dark-mode .feature-item, .dark-mode .info-card, .dark-mode .card, .dark-mode .form-box, .dark-mode .quiz-card, .dark-mode .match-card { background-color: #252b33 !important; border-color: #4dabff !important; }
+.dark-mode footer { color: #888 !important; }
+
+.theme-switch-wrapper {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 10001;
+}
+.theme-switch {
+    display: inline-block;
+    height: 38px;
+    position: relative;
+    width: 74px;
+}
+.theme-switch input { display: none; }
+.slider {
+    background-color: #e0e0e0 !important;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.ball {
+    background-color: #2c3e50;
+    bottom: 4px;
+    height: 30px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 30px;
+    border-radius: 50%;
+    z-index: 2;
+    transform: translateX(36px);
+}
+input:checked + .slider { background-color: #1a1a2e !important; }
+input:checked + .slider .ball { transform: translateX(0); background-color: #fff; }
+.slider svg { width: 22px; height: 22px; z-index: 1; transition: .4s; }
+.slider .sun { color: #f1c40f !important; fill: #f1c40f; }
+.slider .moon { color: #f1c40f !important; fill: #f1c40f; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header style="position:relative;">
+    <h1>TravelAssistant</h1>
+    <h3 data-i18n="match-subtitle">Destination Matchmaker</h3>
+    <div class="lang-toggle" style="position:absolute;bottom:8px;right:10px;display:flex;gap:4px;">
+        <button id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+        <button id="lang-btn-bn" onclick="setLanguage('bn')">বাংলা</button>
+    </div>
+</header>
+
+<nav>
+<ul>
+    <li><a href="index.html"  data-i18n="nav-home">Home</a></li>
+    <li><a href="page2.html"  data-i18n="nav-destinations">Destinations</a></li>
+    <li><a href="page3.html"  data-i18n="nav-weather">Weather Preference</a></li>
+    <li><a href="page4.html"  data-i18n="nav-budget">Budget Planner</a></li>
+    <li><a href="page5.html"  data-i18n="nav-seasonal">Seasonal Specials</a></li>
+    <li><a href="page8.html"  data-i18n="nav-matchmaker">Matchmaker</a></li>
+    <li><a href="page10.html" data-i18n="nav-packing">Packing Assistant</a></li>
+    <li><a href="page6.html"  data-i18n="nav-contact">Contact</a></li>
+    <li><a href="page7.html"  data-i18n="nav-about">About Us</a></li>
+    <li id="userDisplay"></li>
+</ul>
+</nav>
+
+<h2 data-i18n="match-h2">Find Your Perfect 2026 Trip</h2>
+<p data-i18n="match-intro">Answer three questions and we'll find a destination that fits you best.</p>
+
+<div class="quiz-card">
+<div class="question">
+<label data-i18n="match-q1">1. What is your primary goal?</label>
+<select id="goal">
+    <option value="culture"   data-i18n="match-opt-culture">History &amp; Culture</option>
+    <option value="adventure" data-i18n="match-opt-adventure">Adventure &amp; Nature</option>
+    <option value="relax"     data-i18n="match-opt-relax">Relaxation &amp; Beaches</option>
+    <option value="urban"     data-i18n="match-opt-urban">City Life</option>
+</select>
+</div>
+
+<div class="question">
+<label data-i18n="match-q2">2. Preferred Climate?</label>
+<select id="temp">
+    <option value="hot"  data-i18n="match-opt-hot">Hot / Tropical</option>
+    <option value="mild" data-i18n="match-opt-mild">Mild / Pleasant</option>
+    <option value="cold" data-i18n="match-opt-cold">Cold / Snow</option>
+</select>
+</div>
+
+<div class="question">
+<label data-i18n="match-q3">3. Travel Distance?</label>
+<select id="distance">
+    <option value="domestic"      data-i18n="match-opt-domestic">Within India</option>
+    <option value="international" data-i18n="match-opt-intl">International</option>
+</select>
+</div>
+
+<button class="find-btn" onclick="findMatch()" data-i18n="match-btn">Match Me!</button>
+</div>
+
+<div id="match-result">
+<h2 data-i18n="match-result-h2">It's a Match!</h2>
+<div class="match-card" id="card-content"></div>
+</div>
+
+<footer>
+&copy; 2026 TravelAssistant Global. All rights reserved.
+</footer>
+
+</div>
+
+<script>
+const destinations = [
+ {id:"agra", name:"Agra, India", goal:"culture", temp:"hot", dist:"domestic", img:"https://assets.gqindia.com/photos/68678e2cb1a3fca3d9ad610d/16:9/w_2560%2Cc_limit/The-Taj-Mahal.jpg"},
+ {id:"kolkata", name:"Kolkata, India", goal:"culture", temp:"hot", dist:"domestic", img:"https://akm-img-a-in.tosshub.com/indiatoday/images/photogallery/201908/ECO3aacUcAAHnEZ_IT_1566199924087.jpg"},
+ {id:"paris", name:"Paris, France", goal:"culture", temp:"mild", dist:"international", img:"https://media.istockphoto.com/id/1498516775/photo/the-eiffel-tower-in-paris-france-at-sunset.jpg?s=612x612&w=0&k=20&c=V4StdESr6-QQWOjXm6R8b1T-_slWLxasMnN6SWdV9ko="},
+ {id:"rome", name:"Rome, Italy", goal:"culture", temp:"mild", dist:"international", img:"https://media.istockphoto.com/id/539115110/photo/colosseum-in-rome-and-morning-sun-italy.jpg?s=612x612&w=0&k=20&c=9NtFxHI3P2IBWRY9t0NrfPZPR4iusHmVLbXg2Cjv9Fs="},
+ {id:"manali", name:"Manali, India", goal:"adventure", temp:"cold", dist:"domestic", img:"https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5"},
+ {id:"ladakh", name:"Leh-Ladakh, India", goal:"adventure", temp:"cold", dist:"domestic", img:"https://www.starscapes.zone/wp-content/uploads/2025/06/women-pangong-lake-mountain-leh-ladakh-india-1-scaled.jpg"},
+ {id:"swissalps", name:"Swiss Alps, Switzerland", goal:"adventure", temp:"cold", dist:"international", img:"https://media.istockphoto.com/id/517599616/photo/panorama-view-of-oeschinensee-on-bernese-oberla.jpg?s=612x612&w=0&k=20&c=PkX0ebgjcsBK4_dnDGClLGspqI4bUZqGB-qUyBnoyIo="},
+ {id:"goa", name:"Goa, India", goal:"relax", temp:"hot", dist:"domestic", img:"https://media.istockphoto.com/id/621897226/photo/goa-beach-and-beautiful-sky-india.jpg?s=612x612&w=0&k=20&c=qDkllEUm9UpsXtfPlELdknkHMlgyT-kptQy6vAYFsM8="},
+ {id:"kerala", name:"Kerala Backwaters, India", goal:"relax", temp:"hot", dist:"domestic", img:"https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f"},
+ {id:"maldives", name:"Maldives", goal:"relax", temp:"hot", dist:"international", img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd"},
+ {id:"mumbai", name:"Mumbai, India", goal:"urban", temp:"hot", dist:"domestic", img:"https://t4.ftcdn.net/jpg/01/46/43/87/360_F_146438747_3XYwVkfnYZuukBZYmDM8xeoqENzyhAqa.jpg"},
+ {id:"delhi", name:"Delhi, India", goal:"urban", temp:"hot", dist:"domestic", img:"https://images.unsplash.com/photo-1587474260584-136574528ed5"},
+ {id:"london", name:"London, UK", goal:"urban", temp:"mild", dist:"international", img:"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad"}
+];
+
+const goalEl = document.getElementById("goal");
+const tempEl = document.getElementById("temp");
+const distanceEl = document.getElementById("distance");
+const matchResult = document.getElementById("match-result");
+const cardContent = document.getElementById("card-content");
+
+let currentMatch = null;
+
+function findMatch() {
+  const goal = goalEl.value;
+  const temp = tempEl.value;
+  const dist = distanceEl.value;
+
+  let matches = destinations.filter(d =>
+    d.goal === goal &&
+    d.temp === temp &&
+    d.dist === dist
+  );
+
+  if (matches.length === 0) {
+    matches = destinations.filter(d => d.goal === goal && d.dist === dist);
+  }
+
+  if (matches.length === 0) {
+    matches = destinations.filter(d => d.dist === dist);
+  }
+
+  const lang = localStorage.getItem("lang") || "en";
+  const t = translations[lang] || translations.en;
+
+  if (matches.length === 0) {
+    cardContent.innerHTML = `
+      <h3>${t["match-no-results-h3"]}</h3>
+      <p>${t["match-no-results-p"]}</p>
+    `;
+    matchResult.style.display = "block";
+    return;
+  }
+
+  currentMatch = matches[Math.floor(Math.random() * matches.length)];
+  renderMatchCard(currentMatch, lang);
+  
+  localStorage.setItem("selectedDestination", currentMatch.name);
+  localStorage.setItem("fromMatchmaker", "true");
+
+  matchResult.style.display = "block";
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+function renderMatchCard(match, lang) {
+  const t = translations[lang] || translations.en;
+  const name = t[`${match.id}-name`] || match.name;
+  const desc = t[`${match.id}-desc`] || "";
+  
+  cardContent.innerHTML = `
+    <img src="${match.img}" alt="${name}">
+    <h3>${name}</h3>
+    <p>${desc}</p>
+    <button class="find-btn" style="background:#007bff;font-size:0.9em"
+      onclick="location.href='page4.html'">
+      ${t["match-check-budget"]}
+    </button>
+  `;
+}
+
+// Re-render when language changes
+document.addEventListener("languageChanged", function(e) {
+  if (currentMatch) {
+    renderMatchCard(currentMatch, e.detail.lang);
+  }
+});
+</script>
+
+<script>
+let name = localStorage.getItem("userName");
+
+if(name){
+    document.getElementById("userDisplay").innerHTML =
+        "👤 " + name + " | <a href='#' onclick='logout()'>Logout</a>";
+}else{
+    document.getElementById("userDisplay").innerHTML =
+        "<a href='auth.html'>Login</a>";
+}
+
+function logout(){
+    localStorage.clear();
+    alert("Logged out successfully");
+    window.location = "auth.html";
+}
+</script>
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="theme-checkbox">
+        <input type="checkbox" id="theme-checkbox" onclick="toggleDarkMode()">
+        <div class="slider">
+            <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <div class="ball"></div>
+        </div>
+    </label>
+</div>
+
+<script src="language.js"></script>
+<script src="theme.js"></script>
+
+</body>
+</html>

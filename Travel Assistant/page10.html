@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TravelAssistant - Smart Packing Assistant</title>
+
+<style>
+body{
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:#e9ecef;
+    margin:0;
+    line-height:1.6;
+}
+
+.container{
+    width:85%;
+    margin:20px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,.10);
+}
+
+header{
+    text-align:center;
+    border-bottom:3px solid #007bff;
+    padding-bottom:10px;
+    margin-bottom:20px;
+}
+header h1{ color:#007bff; font-size:2.4em; margin:0; }
+header h3{ color:#6c757d; font-weight:bold; margin-top:6px; }
+
+nav ul{
+    list-style:none;
+    padding:0;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    background:#f8f9fa;
+    border-radius:5px;
+    margin-bottom:20px;
+    align-items: center;
+}
+nav ul li a{
+    text-decoration:none;
+    color:#007bff;
+    font-weight:bold;
+    padding:8px 15px; /* Reduced vertical padding slightly */
+    display:flex;
+    align-items: center;
+    height: 34px; /* Fixed height for consistency with toggle */
+}
+nav ul li a:hover,
+nav ul li a.active{
+    background:#007bff;
+    color:white;
+    border-radius:5px;
+}
+.lang-toggle{ display:flex; align-items:center; gap:4px; padding:6px 10px; }
+.lang-toggle button{ border:2px solid #007bff; border-radius:4px; padding:4px 10px; font-size:0.85em; font-weight:bold; cursor:pointer; transition:0.2s; }
+
+h2{
+    color:#dc3545;
+    border-left:4px solid #dc3545;
+    padding-left:10px;
+    margin-top:30px;
+}
+
+.form-box{
+    background:#f8f9fa;
+    padding:20px;
+    border-radius:8px;
+    margin-top:20px;
+}
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:15px;
+}
+.form-box select, .form-box button{
+    width:100%;
+    padding:10px;
+    border-radius:5px;
+    border:1px solid #ccc;
+    margin-top:6px;
+    font-size:14px;
+}
+
+/* FORM BUTTON */
+.form-box button{
+    background:#007bff;
+    color:white;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+}
+.form-box button:hover{ background:#0056b3; }
+
+.checklist{ display:none; margin-top:30px; }
+.card{
+    background:#fff;
+    border-left:3px solid #007bff;
+    padding:15px;
+    border-radius:6px;
+    margin-bottom:15px;
+}
+.card h4{ color:#007bff; margin-bottom:8px; }
+.card ul{ padding-left:18px; }
+.card ul li{ margin-bottom:5px; }
+
+footer{ text-align:center; margin-top:40px; color:#6c757d; }
+
+/* DARK MODE OVERRIDES */
+body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+.dark-mode .container { background-color: #1e1e1e !important; color: #e0e0e0 !important; box-shadow: 0 4px 12px rgba(255,255,255,0.05) !important; }
+.dark-mode header { border-bottom-color: #4dabff !important; }
+.dark-mode header h1 { color: #4dabff !important; }
+.dark-mode header h3 { color: #b0b0b0 !important; }
+.dark-mode nav ul { background-color: #2c2c2c !important; }
+.dark-mode nav ul li a { color: #4dabff !important; }
+.dark-mode nav ul li a:hover { background-color: #4dabff !important; color: #fff !important; }
+.dark-mode .lang-toggle button, .dark-mode .theme-toggle button { border-color: #4dabff !important; color: #4dabff !important; background: transparent !important; }
+.dark-mode .theme-toggle button:hover { background-color: rgba(77, 171, 255, 0.1) !important; }
+.dark-mode h2 { color: #ff5252 !important; border-left-color: #ff5252 !important; }
+.dark-mode input, .dark-mode select, .dark-mode textarea { background-color: #2c2c2c !important; color: #e0e0e0 !important; border-color: #444 !important; }
+.dark-mode .destination-item, .dark-mode .feature-item, .dark-mode .info-card, .dark-mode .card, .dark-mode .form-box, .dark-mode .checklist-card { background-color: #252b33 !important; border-color: #4dabff !important; }
+.dark-mode .card h4 { color: #4dabff !important; }
+.dark-mode .card ul li { color: #e0e0e0 !important; }
+.dark-mode footer { color: #888 !important; }
+
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 10001;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 38px;
+            position: relative;
+            width: 74px;
+        }
+        .theme-switch input { display: none; }
+        .slider {
+            background-color: #e0e0e0 !important;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .ball {
+            background-color: #2c3e50;
+            bottom: 4px;
+            height: 30px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 2;
+            transform: translateX(36px);
+        }
+        input:checked + .slider { background-color: #1a1a2e !important; }
+        input:checked + .slider .ball { transform: translateX(0); background-color: #fff; }
+        .slider svg { width: 22px; height: 22px; z-index: 1; transition: .4s; }
+        .slider .sun { color: #f1c40f !important; fill: #f1c40f; }
+        .slider .moon { color: #f1c40f !important; fill: #f1c40f; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header style="position:relative;">
+    <h1>TravelAssistant</h1>
+    <h3 data-i18n="pack-subtitle">Your Smart Journey Starts Here</h3>
+    <div class="lang-toggle" style="position:absolute;bottom:8px;right:10px;display:flex;gap:4px;">
+        <button id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+        <button id="lang-btn-bn" onclick="setLanguage('bn')">বাংলা</button>
+    </div>
+</header>
+
+<nav>
+<ul>
+    <li><a href="index.html"  data-i18n="nav-home">Home</a></li>
+    <li><a href="page2.html"  data-i18n="nav-destinations">Destinations</a></li>
+    <li><a href="page3.html"  data-i18n="nav-weather">Weather Preference</a></li>
+    <li><a href="page4.html"  data-i18n="nav-budget">Budget Planner</a></li>
+    <li><a href="page5.html"  data-i18n="nav-seasonal">Seasonal Specials</a></li>
+    <li><a href="page8.html"  data-i18n="nav-matchmaker">Matchmaker</a></li>
+    <li><a href="page10.html" data-i18n="nav-packing">Packing Assistant</a></li>
+    <li><a href="page6.html"  data-i18n="nav-contact">Contact</a></li>
+    <li><a href="page7.html"  data-i18n="nav-about">About Us</a></li>
+    <li id="userDisplay"></li>
+</ul>
+</nav>
+
+<h2 data-i18n="pack-h2">Smart Packing Assistant</h2>
+
+<div class="form-box">
+    <label data-i18n="pack-label-days">Trip Duration</label>
+    <select id="days">
+        <option value="3" data-i18n="pack-opt-3days">2–3 Days</option>
+        <option value="5" selected data-i18n="pack-opt-5days">4–6 Days</option>
+        <option value="8" data-i18n="pack-opt-8days">7+ Days</option>
+    </select>
+
+    <label data-i18n="pack-label-climate">Climate</label>
+    <select id="climate">
+        <option value="hot"  data-i18n="pack-opt-hot">Hot / Tropical</option>
+        <option value="mild" data-i18n="pack-opt-mild">Mild / Pleasant</option>
+        <option value="cold" data-i18n="pack-opt-cold">Cold / Snow</option>
+    </select>
+
+    <label data-i18n="pack-label-type">Trip Type</label>
+    <select id="type">
+        <option value="domestic"      data-i18n="pack-opt-domestic">Domestic</option>
+        <option value="international" data-i18n="pack-opt-intl">International</option>
+    </select>
+
+    <button onclick="generateChecklist()" data-i18n="pack-btn">Generate Packing List</button>
+</div>
+
+<div class="checklist" id="checklist">
+    <h2 data-i18n="pack-checklist-h2">Your Packing Checklist</h2>
+
+    <div class="card" id="clothes"></div>
+    <div class="card" id="essentials"></div>
+    <div class="card" id="health"></div>
+    <div class="card" id="extras"></div>
+</div>
+
+<footer>
+&copy; 2026 TravelAssistant Global. All rights reserved.
+</footer>
+
+</div>
+
+<script>
+const destination =
+  localStorage.getItem("selectedDestination") || "Your Destination";
+
+document.getElementById("destination").innerText = destination;
+
+function generateChecklist(){
+    const days = document.getElementById("days").value;
+    const climate = document.getElementById("climate").value;
+    const type = document.getElementById("type").value;
+
+    const lang = localStorage.getItem("lang") || "en";
+    const t = translations[lang] || translations.en;
+
+    let clothesKeys = ["pack-item-comfortable","pack-item-sleepwear","pack-item-innerwear"];
+    if(climate==="hot") clothesKeys.push("pack-item-cotton","pack-item-cap","pack-item-sunglasses");
+    if(climate==="mild") clothesKeys.push("pack-item-jacket","pack-item-casual");
+    if(climate==="cold") clothesKeys.push("pack-item-heavy-jacket","pack-item-thermals","pack-item-gloves","pack-item-socks");
+
+    let essentialsKeys = ["pack-item-phone","pack-item-charger","pack-item-powerbank"];
+    if(type==="international") essentialsKeys.push("pack-item-passport","pack-item-visa","pack-item-sim");
+    if(days>=5) essentialsKeys.push("pack-item-footwear","pack-item-laundry");
+
+    let healthKeys = ["pack-item-medicine","pack-item-firstaid"];
+    if(climate==="hot") healthKeys.push("pack-item-sunscreen","pack-item-insect");
+    if(climate==="cold") healthKeys.push("pack-item-coldcream","pack-item-lipbalm");
+
+    let extrasKeys = ["pack-item-camera","pack-item-docs","pack-item-snacks"];
+    if(climate==="hot") extrasKeys.push("pack-item-swimwear","pack-item-towel");
+
+    let docsKeys = ["pack-item-tickets", "pack-item-hotel-conf"];
+    if(type==="domestic") docsKeys.push("pack-item-id-card");
+    if(type==="international") docsKeys.push("pack-item-passport", "pack-item-visa", "pack-item-insurance", "pack-item-sim");
+
+    // Remove duplicates from combined lists
+    essentialsKeys = [...new Set([...docsKeys, ...essentialsKeys])];
+
+    document.getElementById("clothes").innerHTML =
+      `<h4>${t["pack-cat-clothing"]}</h4><ul>${clothesKeys.map(k=>`<li>${t[k]}</li>`).join("")}</ul>`;
+
+    document.getElementById("essentials").innerHTML =
+      `<h4>${t["pack-cat-essentials"]}</h4><ul>${essentialsKeys.map(k=>`<li>${t[k]}</li>`).join("")}</ul>`;
+
+    document.getElementById("health").innerHTML =
+      `<h4>${t["pack-cat-health"]}</h4><ul>${healthKeys.map(k=>`<li>${t[k]}</li>`).join("")}</ul>`;
+
+    document.getElementById("extras").innerHTML =
+      `<h4>${t["pack-cat-extras"]}</h4><ul>${extrasKeys.map(k=>`<li>${t[k]}</li>`).join("")}</ul>`;
+
+    document.getElementById("checklist").style.display="block";
+    window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+
+// Re-generate when language changes
+document.addEventListener("languageChanged", function() {
+  if (document.getElementById("checklist").style.display === "block") {
+    generateChecklist();
+  }
+});
+</script>
+<script>
+let name = localStorage.getItem("userName");
+
+if(name){
+    document.getElementById("userDisplay").innerHTML =
+        "👤 " + name + " | <a href='#' onclick='logout()'>Logout</a>";
+}else{
+    document.getElementById("userDisplay").innerHTML =
+        "<a href='auth.html'>Login</a>";
+}
+
+function logout(){
+    localStorage.clear();
+    alert("Logged out successfully");
+    window.location = "auth.html";
+}
+</script>
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="theme-checkbox">
+        <input type="checkbox" id="theme-checkbox" onclick="toggleDarkMode()">
+        <div class="slider">
+            <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <div class="ball"></div>
+        </div>
+    </label>
+</div>
+
+<script src="language.js"></script>
+<script src="theme.js"></script>
+
+</body>
+</html>

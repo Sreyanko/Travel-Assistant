@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelAssistant - Contact</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        header h1 { color: #007bff; font-size: 2.5em; margin: 10px 0; }
+        header h3 { color: #6c757d; }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            height: 34px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover { background-color: #007bff; color: white; border-radius: 5px; }
+
+        /* DARK MODE OVERRIDES */
+        body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+        .dark-mode .container { background-color: #1e1e1e !important; color: #e0e0e0 !important; box-shadow: 0 4px 12px rgba(255,255,255,0.05) !important; }
+        .dark-mode header { border-bottom-color: #4dabff !important; }
+        .dark-mode header h1 { color: #4dabff !important; }
+        .dark-mode header h3 { color: #b0b0b0 !important; }
+        .dark-mode nav ul { background-color: #2c2c2c !important; }
+        .dark-mode nav ul li a { color: #4dabff !important; }
+        .dark-mode nav ul li a:hover { background-color: #4dabff !important; color: #fff !important; }
+        .dark-mode .lang-toggle button, .dark-mode .theme-toggle button { border-color: #4dabff !important; color: #4dabff !important; background: transparent !important; }
+        .dark-mode .theme-toggle button:hover { background-color: rgba(77, 171, 255, 0.1) !important; }
+        .dark-mode h2 { color: #ff5252 !important; border-left-color: #ff5252 !important; }
+        .dark-mode input, .dark-mode select, .dark-mode textarea { background-color: #2c2c2c !important; color: #e0e0e0 !important; border-color: #444 !important; }
+        .dark-mode .destination-item, .dark-mode .feature-item, .dark-mode .info-card, .dark-mode .card, .dark-mode .form-box, .dark-mode .contact-form { background-color: #252b33 !important; border-color: #4dabff !important; }
+        .dark-mode .contact-form label { color: #e0e0e0 !important; }
+        .dark-mode footer { color: #888 !important; }
+
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 10001;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 38px;
+            position: relative;
+            width: 74px;
+        }
+        .theme-switch input { display: none; }
+        .slider {
+            background-color: #e0e0e0 !important;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .ball {
+            background-color: #2c3e50;
+            bottom: 4px;
+            height: 30px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 2;
+            transform: translateX(36px);
+        }
+        input:checked + .slider { background-color: #1a1a2e !important; }
+        input:checked + .slider .ball { transform: translateX(0); background-color: #fff; }
+        .slider svg { width: 22px; height: 22px; z-index: 1; transition: .4s; }
+        .slider .sun { color: #f1c40f !important; fill: #f1c40f; }
+        .slider .moon { color: #f1c40f !important; fill: #f1c40f; }
+        .lang-toggle { display: flex; align-items: center; gap: 4px; padding: 6px 10px; }
+        .lang-toggle button { border: 2px solid #007bff; border-radius: 4px; padding: 4px 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; transition: 0.2s; }
+
+        h2 { color: #dc3545; border-left: 4px solid #dc3545; padding-left: 10px; margin-top: 30px; }
+
+        .contact-flex { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+        .contact-info { flex: 1; min-width: 300px; }
+        .info-card { background: #f1f8ff; padding: 20px; border-radius: 8px; border-left: 5px solid #007bff; margin-bottom: 15px; }
+        .info-card h4 { margin: 0 0 5px 0; color: #0056b3; display: flex; align-items: center; gap: 10px; }
+        .contact-icon { color: #007bff; font-size: 1.2em; }
+        .contact-form { flex: 1; min-width: 300px; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .submit-btn { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .submit-btn:hover { background-color: #0056b3; }
+        .highlight-box { background-color: #d4edda; color: #155724; padding: 15px; border: 1px solid #c3e6cb; border-radius: 5px; margin-top: 30px; font-weight: bold; text-align: center; }
+        footer { text-align: center; padding: 20px; color: #6c757d; font-size: 0.9em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header style="position:relative;">
+        <h1>TravelAssistant</h1>
+        <h3 data-i18n="contact-subtitle">Contact Us</h3>
+        <div class="lang-toggle" style="position:absolute;bottom:8px;right:10px;display:flex;gap:4px;">
+            <button id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+            <button id="lang-btn-bn" onclick="setLanguage('bn')">বাংলা</button>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html"  data-i18n="nav-home">Home</a></li>
+            <li><a href="page2.html"  data-i18n="nav-destinations">Destinations</a></li>
+            <li><a href="page3.html"  data-i18n="nav-weather">Weather Preference</a></li>
+            <li><a href="page4.html"  data-i18n="nav-budget">Budget Planner</a></li>
+            <li><a href="page5.html"  data-i18n="nav-seasonal">Seasonal Specials</a></li>
+            <li><a href="page8.html"  data-i18n="nav-matchmaker">Matchmaker</a></li>
+            <li><a href="page10.html" data-i18n="nav-packing">Packing Assistant</a></li>
+            <li><a href="page6.html"  data-i18n="nav-contact">Contact</a></li>
+            <li><a href="page7.html"  data-i18n="nav-about">About Us</a></li>
+            <li id="userDisplay"></li>
+        </ul>
+    </nav>
+
+    <h2 data-i18n="contact-h2">Get In Touch</h2>
+    <p data-i18n="contact-intro">Have questions about your 2026 travel plans? Our team is ready to help you find the perfect climate and budget for your next adventure.</p>
+
+    <div class="contact-flex">
+        <div class="contact-info">
+            <div class="info-card">
+                <h4><span class="contact-icon">&#9993;</span> <span data-i18n="contact-email-lbl">Email Address</span></h4>
+                <p>support@travelassistant.com</p>
+            </div>
+            <div class="info-card">
+                <h4><span class="contact-icon">&#9742;</span> <span data-i18n="contact-phone-lbl">Phone Number</span></h4>
+                <p>+91 98765 43210</p>
+            </div>
+            <div class="info-card">
+                <h4><span class="contact-icon">&#10146;</span> <span data-i18n="contact-office-lbl">Office Location</span></h4>
+                <p>Netaji Subhas Chandra Bose Block, VIT University, Vellore, Tamil Nadu, India</p>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <form action="#">
+                <div class="form-group">
+                    <label data-i18n="contact-fname">Full Name</label>
+                    <input type="text" data-i18n-placeholder="placeholder-name" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="contact-emailid">Email ID</label>
+                    <input type="email" data-i18n-placeholder="placeholder-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="contact-message">Message</label>
+                    <textarea rows="4" data-i18n-placeholder="contact-message-placeholder" placeholder="How can we help you?"></textarea>
+                </div>
+                <button type="button" class="submit-btn" onclick="alert('Thank you! We will contact you soon.')" data-i18n="contact-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <span data-i18n="contact-highlight">Want to see where to go? Check out the</span>
+        <a href="page2.html"><b data-i18n="contact-highlight-link">Destination List</b></a>!
+    </div>
+
+    <footer>
+        <span data-i18n="footer-copy">© 2026 TravelAssistant Global. All rights reserved.</span>
+    </footer>
+</div>
+<script>
+let name = localStorage.getItem("userName");
+
+if(name){
+    document.getElementById("userDisplay").innerHTML =
+        "👤 " + name + " | <a href='#' onclick='logout()'>Logout</a>";
+}else{
+    document.getElementById("userDisplay").innerHTML =
+        "<a href='auth.html'>Login</a>";
+}
+
+function logout(){
+    localStorage.clear();
+    alert("Logged out successfully");
+    window.location = "auth.html";
+}
+</script>
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="theme-checkbox">
+        <input type="checkbox" id="theme-checkbox" onclick="toggleDarkMode()">
+        <div class="slider">
+            <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <div class="ball"></div>
+        </div>
+    </label>
+</div>
+
+<script src="language.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>
